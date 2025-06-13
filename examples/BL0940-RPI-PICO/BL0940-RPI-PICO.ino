@@ -13,9 +13,8 @@ void setup() {
   // For the USB, just use Serial as normal:
   Serial.begin(115200);
 
-  // Configure Serial2 on pins TX=GP8 and RX=GP9
-  Serial2.begin(4800);
-
+  // Configure Serial2 fixed to RX=GP9 and TX=GP8
+  bl0940.begin(Serial2);
   bl0940.Reset();
   bl0940.setFrequency(60);    //50[Hz]
   bl0940.setUpdateRate(800);  //400[ms]

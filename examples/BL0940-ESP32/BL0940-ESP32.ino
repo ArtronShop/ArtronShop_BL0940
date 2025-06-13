@@ -1,4 +1,3 @@
-
 #include "MCM_BL0940.h"
 
 BL0940 bl0940;
@@ -6,6 +5,7 @@ BL0940 bl0940;
 void setup() {
   Serial.begin(115200);
 
+  bl0940.begin(Serial1, RX, TX); // RX pin - TX pin 
   bl0940.Reset();
   bl0940.setFrequency(60); //50[Hz]
   bl0940.setUpdateRate(800); //400[ms]
@@ -19,7 +19,7 @@ void loop() {
 
   float current;
   bl0940.getCurrent( &current );
-  Serial.printf("%.2f [A]\n", current );
+  Serial.printf("%.4f [A]\n", current );
 
   float activePower;
   bl0940.getActivePower( &activePower );
@@ -27,7 +27,7 @@ void loop() {
 
   float activeEnergy;
   bl0940.getActiveEnergy( &activeEnergy );
-  Serial.printf("%.3f [kWh]\n", activeEnergy );
+  Serial.printf("%.6f [kWh]\n", activeEnergy );
 
   float powerFactor;
   bl0940.getPowerFactor( &powerFactor );

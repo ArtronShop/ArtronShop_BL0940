@@ -6,14 +6,18 @@
 *	Based on Kohacraft previews work.
 */
 
+#pragma once
+
+#include <Arduino.h>
+
 #ifndef MCM_BL0940_h
 #define MCM_BL0940_h
 
 class BL0940
 {
   public:
-    BL0940();
-    ~BL0940(); 
+
+    bool begin(HardwareSerial& serial, int8_t rxPin = -1, int8_t txPin = -1);
     bool getCurrent( float *current );  //[A]
     bool getVoltage( float *voltage );  //[V]
     bool getActivePower( float *activePower );  //[W]
@@ -27,6 +31,7 @@ class BL0940
     bool Reset();
 
   private:
+    HardwareSerial* serialPtr = nullptr;  // pointer to HardwareSerial
     const uint16_t timeout = 1000;  //Serial timeout[ms]
     const float Vref = 1.218; //[V]
     const float R5 = 3.3;   //[Ohm]
@@ -43,5 +48,6 @@ class BL0940
     uint8_t _culcCheckSum( uint8_t *txData , int txLenght , uint8_t *rxData , int rxLenght );
     bool _writeRegister( uint8_t address , uint32_t data );
     bool _readRegister( uint8_t address , uint32_t *data );
+    
 };
 #endif /* BL0940 */

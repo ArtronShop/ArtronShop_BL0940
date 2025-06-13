@@ -25,20 +25,17 @@
 #define ERR(...)
 #endif /* BL0940_DBG */
 
-BL0940::BL0940()
+bool BL0940::begin(HardwareSerial& serial, int8_t rxPin, int8_t txPin)
 {
 
-  /* For M5STACK_PAPER */
-  // Serial2.begin(4800, SERIAL_8N1, 18, 19);
+  serialPtr = &serial;  // default
 
-  Serial2.begin(4800);
-
-  delay(500);
-}
-
-BL0940::~BL0940()
-{
-  Serial2.end();
+#if defined (ARDUINO_RASPBERRY_PI_PICO)
+  serialPtr->begin(4800);
+#else
+  serialPtr->begin(4800, SERIAL_8N1, rxPin, txPin);
+#endif
+  return true;
 }
 
 uint8_t BL0940::_culcCheckSum(uint8_t *txData, int txLenght, uint8_t *rxData, int rxLenght)
@@ -60,20 +57,20 @@ uint8_t BL0940::_culcCheckSum(uint8_t *txData, int txLenght, uint8_t *rxData, in
 bool BL0940::_writeRegister(uint8_t address, uint32_t data)
 {
   // read buffer clear
-  while (Serial2.available() != 0)
+  while (serialPtr->available() != 0)
   {
-    Serial2.read();
+    serialPtr->read();
   }
 
   // Register Unlock
   uint8_t unlockTxData[6] = {0xA8, 0x1A, 0x55, 0, 0, 0};
   unlockTxData[5] = _culcCheckSum(unlockTxData, sizeof(unlockTxData) - 1, 0, 0);
-  Serial2.write(unlockTxData, sizeof(unlockTxData));
+  serialPtr->write(unlockTxData, sizeof(unlockTxData));
 
   // Write Register
   uint8_t txData[6] = {0xA8, address, (uint8_t)(data), (uint8_t)(data >> 8), (uint8_t)(data >> 16)};
   txData[5] = _culcCheckSum(txData, sizeof(txData) - 1, 0, 0);
-  Serial2.write(txData, sizeof(txData));
+  serialPtr->write(txData, sizeof(txData));
 
   return true;
 }
@@ -81,17 +78,17 @@ bool BL0940::_writeRegister(uint8_t address, uint32_t data)
 bool BL0940::_readRegister(uint8_t address, uint32_t *data)
 {
   uint8_t txData[] = {0x58, address};
-  Serial2.write(txData, sizeof(txData));
+  serialPtr->write(txData, sizeof(txData));
 
   uint8_t rxData[4] = {0, 0, 0, 0};
   uint32_t startTime = millis();
-  while (Serial2.available() != sizeof(rxData))
+  while (serialPtr->available() != sizeof(rxData))
   {
     delay(10);
     if ((millis() - startTime) > timeout)
       break;
   }
-  int rxDataLength = Serial2.readBytes(rxData, sizeof(rxData));
+  int rxDataLength = serialPtr->readBytes(rxData, sizeof(rxData));
 
   if (rxDataLength == 0)
   {
@@ -359,9 +356,9 @@ bool BL0940::Reset()
     ERR("Can not write SOFT_RESET register.");
     return false;
   }
-  while (Serial2.available() != 0)
+  while (serialPtr->available() != 0)
   {
-    Serial2.read();
+    serialPtr->read();
   }
 
   delay(500);
