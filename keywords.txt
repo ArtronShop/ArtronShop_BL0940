@@ -12,6 +12,7 @@ BL0940	KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 
+begin		    KEYWORD2
 getCurrent		KEYWORD2
 getVoltage		KEYWORD2
 getActivePower	KEYWORD2
