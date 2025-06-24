@@ -1,11 +1,13 @@
-# MCM BL0940 Library
+# ArtronShop BL0940 Library (original ![mcm-bl0940-lib](https://github.com/mcmchris/mcm-bl0940-lib))
+
+ArtronShop modify for support AS-Energy module and ATD3.5-S3 EVSE shield
 
 ## Brief
 An Arduino library to interface the BL0940 Energy Meter IC with Arduino, ESP32 and Raspberry Pi Pico.
 
-## DIY BL0940 Energy Monitor Board
+## Hardware support
 
-![FotoModulo](https://user-images.githubusercontent.com/49886387/219874809-0241e54c-ceb6-4885-a2be-acae7203bad2.JPG)
+![AS-Energy](https://www.artronshop.co.th/p/734)
 
 ## Supported MCU's
 - ESP32: 
