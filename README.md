@@ -7,7 +7,7 @@ An Arduino library to interface the BL0940 Energy Meter IC with Arduino, ESP32 a
 
 ## Hardware support
 
-[AS-Energy](https://www.artronshop.co.th/p/734)
+ - [AS-Energy](https://www.artronshop.co.th/p/734)
 
 ## Supported MCU's
 - ESP32: 
