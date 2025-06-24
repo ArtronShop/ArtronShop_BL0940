@@ -34,15 +34,15 @@ class BL0940
     HardwareSerial* serialPtr = nullptr;  // pointer to HardwareSerial
     const uint16_t timeout = 1000;  //Serial timeout[ms]
     const float Vref = 1.218; //[V]
-    const float R5 = 3.3;   //[Ohm]
-    const float Rt = 2000.0;  //n:1
-    const float R8 = 20.0;  //[kOhm]
-    const float R9 = 20.0;  //[kOhm]
-    const float R10 = 20.0;  //[kOhm]
-    const float R11 = 20.0;  //[kOhm]
-    const float R12 = 20.0;  //[kOhm]
-    const float R6 = 24.9;  //[Ohm]
-    uint16_t Hz = 60;   //[Hz]
+    const float R5 = 2;   //[Ohm]
+    const float Rt = 1000.0;  //n:1
+    const float R8 = 470.0;  //[kOhm]
+    const float R9 = 0.0;  //[kOhm]
+    const float R10 = 0.0;  //[kOhm]
+    const float R11 = 0.0;  //[kOhm]
+    const float R12 = 0.0;  //[kOhm]
+    const float R6 = 120;  //[Ohm]
+    uint16_t Hz = 50;   //[Hz]
     uint16_t updateRate = 400; //[ms]
 
     uint8_t _culcCheckSum( uint8_t *txData , int txLenght , uint8_t *rxData , int rxLenght );
