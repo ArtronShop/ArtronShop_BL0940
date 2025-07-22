@@ -7,8 +7,10 @@ void setup() {
 
   bl0940.begin(Serial1, RX, TX); // RX pin - TX pin 
   bl0940.Reset();
-  bl0940.setFrequency(60); //50[Hz]
-  bl0940.setUpdateRate(800); //400[ms]
+  bl0940.setFrequency(50); // 50 Hz
+  bl0940.setUpdateRate(400); // 400 mS
+  bl0940.setCurrentOffset(-52);
+  bl0940.setActivePowerOffset(80);
 }
 
 void loop() {

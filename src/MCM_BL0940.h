@@ -18,6 +18,9 @@ class BL0940
   public:
 
     bool begin(HardwareSerial& serial, int8_t rxPin = -1, int8_t txPin = -1);
+    bool setCurrentOffset(int8_t offset);
+    bool setActivePowerOffset(int8_t offset);
+    bool setActivePowerNoLoadThreshold(int8_t threshold);
     bool getCurrent( float *current );  //[A]
     bool getVoltage( float *voltage );  //[V]
     bool getActivePower( float *activePower );  //[W]
@@ -36,7 +39,7 @@ class BL0940
     const float Vref = 1.218; //[V]
     const float R5 = 2;   //[Ohm]
     const float Rt = 1000.0;  //n:1
-    const float R8 = 470.0;  //[kOhm]
+    const float R8 = 462.0;  //[kOhm]
     const float R9 = 0.0;  //[kOhm]
     const float R10 = 0.0;  //[kOhm]
     const float R11 = 0.0;  //[kOhm]

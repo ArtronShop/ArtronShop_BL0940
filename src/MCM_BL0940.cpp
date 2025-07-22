@@ -10,16 +10,12 @@
 #include <Arduino.h>
 #include "MCM_BL0940.h"
 
+static const char * TAG = "BL0940";
+
 #define BL0940_DEBUG 1
 #if BL0940_DEBUG
-#define DBG(...)                 \
-  {                              \
-    Serial.println(__VA_ARGS__); \
-  }
-#define ERR(...)                 \
-  {                              \
-    Serial.println(__VA_ARGS__); \
-  }
+#define DBG(format, ...) log_v("[%s] " format, TAG, ##__VA_ARGS__)
+#define ERR(format, ...) log_e("[%s] " format, TAG, ##__VA_ARGS__)
 #else
 #define DBG(...)
 #define ERR(...)
@@ -99,13 +95,59 @@ bool BL0940::_readRegister(uint8_t address, uint32_t *data)
   uint8_t checksum = _culcCheckSum(txData, sizeof(txData), rxData, sizeof(rxData) - 1);
   if (rxData[3] != checksum)
   {
-    char massage[128];
-    sprintf(massage, "Checksum error truet:%x read:%x.", checksum, rxData[3]);
-    ERR(massage);
+    ERR("Checksum error truet:%x read:%x.", checksum, rxData[3]);
     return false;
   }
 
   *data = ((uint32_t)rxData[2] << 16) | ((uint32_t)rxData[1] << 8) | (uint32_t)rxData[0];
+  return true;
+}
+
+bool BL0940::setCurrentOffset(int8_t offset) {
+  if (false == _writeRegister(0x13, offset))
+  {
+    ERR("Can not write I_RMSOS register.");
+    return false;
+  }
+  uint32_t data;
+  if (false == _readRegister(0x13, &data))
+  {
+    ERR("Can not read I_RMS register.");
+    return false;
+  }
+  DBG("Set Current Offset to:%d", (int8_t) data);
+  return true;
+}
+
+bool BL0940::setActivePowerOffset(int8_t offset) {
+  if (false == _writeRegister(0x15, offset))
+  {
+    ERR("Can not write WATTOS register.");
+    return false;
+  }
+  uint32_t data;
+  if (false == _readRegister(0x15, &data))
+  {
+    ERR("Can not read WATTOS register.");
+    return false;
+  }
+  DBG("Set Active Power Offset to:%d", data);
+  return true;
+}
+
+bool BL0940::setActivePowerNoLoadThreshold(int8_t offset) {
+  if (false == _writeRegister(0x17, offset))
+  {
+    ERR("Can not write WA_CREEP register.");
+    return false;
+  }
+  uint32_t data;
+  if (false == _readRegister(0x17, &data))
+  {
+    ERR("Can not read WA_CREEP register.");
+    return false;
+  }
+  DBG("Set Active power no-load threshold register to:%d", data);
   return true;
 }
 
@@ -117,6 +159,7 @@ bool BL0940::getCurrent(float *current)
     ERR("Can not read I_RMS register.");
     return false;
   }
+  DBG("I_RMS register: %d", data);
   *current = (float)data * Vref / ((324004.0 * R5 * 1000.0) / Rt);
   return true;
 }
@@ -144,6 +187,7 @@ bool BL0940::getActivePower(float *activePower)
   }
 
   int32_t rowActivePower = (int32_t)(data << 8) / 256;
+  DBG("WATT register: %d", rowActivePower);
   if (rowActivePower < 0)
     rowActivePower = -rowActivePower;
   *activePower = (float)rowActivePower * Vref * Vref * (R8 + R9 + R10 + R11 + R12) / (4046.0 * (R5 * 1000.0 / Rt) * R6);
@@ -324,9 +368,7 @@ bool BL0940::setOverCurrentDetection(float detectionCurrent)
     ERR("Can not write I_FAST_RMS_CTRL register.");
     return false;
   }
-  char massage[128];
-  sprintf(massage, "Set Current Detection:%.1fA.", actualDetectionCurrent);
-  DBG(massage);
+  DBG("Set Current Detection:%.1fA.", actualDetectionCurrent);
 
   return true;
 }
