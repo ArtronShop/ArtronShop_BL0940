@@ -159,7 +159,7 @@ bool BL0940::getCurrent(float *current)
     ERR("Can not read I_RMS register.");
     return false;
   }
-  DBG("I_RMS register: %d", data);
+  // DBG("I_RMS register: %d", data);
   *current = (float)data * Vref / ((324004.0 * R5 * 1000.0) / Rt);
   return true;
 }
@@ -187,7 +187,7 @@ bool BL0940::getActivePower(float *activePower)
   }
 
   int32_t rowActivePower = (int32_t)(data << 8) / 256;
-  DBG("WATT register: %d", rowActivePower);
+  // DBG("WATT register: %d", rowActivePower);
   if (rowActivePower < 0)
     rowActivePower = -rowActivePower;
   *activePower = (float)rowActivePower * Vref * Vref * (R8 + R9 + R10 + R11 + R12) / (4046.0 * (R5 * 1000.0 / Rt) * R6);
